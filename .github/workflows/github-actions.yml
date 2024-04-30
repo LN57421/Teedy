@@ -2,11 +2,8 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: 
-      - $default-branch
   pull_request:
-    branches: 
-      - $default-branch
+  workflow_dispatch:
 
 jobs:
   build:
@@ -23,4 +20,3 @@ jobs:
           
       - name: Build with Maven
         run: mvn -B -DskipTests package --file pom.xml
-        # You can add additional Maven commands here if needed
