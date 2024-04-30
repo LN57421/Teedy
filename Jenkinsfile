@@ -20,21 +20,13 @@ pipeline {
             steps {
                 sh 'mvn surefire-report:report'
             }
-            post {
-                always {
-                    archiveArtifacts artifacts: '**/target/site/surefire-report/**', fingerprint: true
-                }
-            }
+
         }
         stage('Generate Javadoc') {
             steps {
                 sh 'mvn javadoc:jar'
             }
-            post {
-                always {
-                    archiveArtifacts artifacts: '**/target/site/apidocs/**', fingerprint: true
-                }
-            }
+
         }
     }
 
