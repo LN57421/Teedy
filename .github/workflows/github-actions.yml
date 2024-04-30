@@ -1,19 +1,26 @@
 name: Java CI with Maven
+
 on:
-push:
-branches: [ $default-branch ]
-pull_request:
-branches: [ $default-branch ]
+  push:
+    branches: 
+      - $default-branch
+  pull_request:
+    branches: 
+      - $default-branch
+
 jobs:
-build:
-runs-on: ubuntu-latest
-steps:
-- uses: actions/checkout@v3
-- name: Set up JDK 11
-uses: actions/setup-java@v3
-with:
-java-version: '11'
-distribution: 'temurin'
-cache: maven
-- name: Build with Maven
-run: mvn -B -DskipTests package --file pom.xml
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          
+      - name: Build with Maven
+        run: mvn -B -DskipTests package --file pom.xml
+        # You can add additional Maven commands here if needed
