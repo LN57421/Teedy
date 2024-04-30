@@ -11,6 +11,11 @@ pipeline {
                 sh 'mvn pmd:pmd'
             }
         }
+        stage('Test') {
+            steps {
+                sh 'mvn test --fail-never'
+            }
+        }
 
         stage('Generate Surefire Report') {
             steps {
@@ -24,11 +29,7 @@ pipeline {
             }
 
         }
-        stage('Test') {
-            steps {
-                sh 'mvn test --fail-never'
-            }
-        }
+
 
     }
 
