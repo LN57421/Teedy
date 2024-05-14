@@ -1,43 +1,39 @@
 pipeline {
     agent any
     stages {
-        stage('Build') { 
+        stage('Package') {
             steps {
-                sh 'mvn -B -DskipTests clean package' 
+                checkout scm
+                sh 'mvn -B -DskipTests clean package'
             }
         }
-        stage('pmd') {
+        // Building Docker image
+        stage('Building image') {
             steps {
-                sh 'mvn pmd:pmd'
+                script {
+                    docker.build('title/traccytian:latest') // Replace 'your-image-name:tag' with your desired image name and tag
+                }
             }
         }
-        stage('Test') {
+        // Pushing Docker image to Docker Hub
+        stage('Upload image') {
             steps {
-                sh 'mvn test --fail-never'
+                script {
+                    docker.withRegistry('', 'docker_hub') {
+                        docker.image('title/traccytian:latest').push() // Replace 'your-image-name:tag' with your image name and tag
+                    }
+                }
             }
         }
-
-        stage('Generate Surefire Report') {
+        // Running Docker containers
+        stage('Run containers') {
             steps {
-                sh 'mvn surefire-report:report'
+                script {
+                    docker.image('title/traccytian:latest').run('-p 10084:10084') // Replace 'your-image-name:tag' with your image name and tag
+                    docker.image('title/traccytian:latest').run('-p 10085:10085') // Replace 'your-image-name:tag' with your image name and tag
+                    docker.image('title/traccytian:latest').run('-p 10086:10086') // Replace 'your-image-name:tag' with your image name and tag
+                }
             }
-
-        }
-        stage('Generate Javadoc') {
-            steps {
-                sh 'mvn javadoc:jar'
-            }
-
-        }
-
-
-    }
-
-    post {
-        always {
-            archiveArtifacts artifacts: '**/target/site/**', fingerprint: true
-            archiveArtifacts artifacts: '**/target/**/*.jar', fingerprint: true
-            archiveArtifacts artifacts: '**/target/**/*.war', fingerprint: true
         }
     }
 }
