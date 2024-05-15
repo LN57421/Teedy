@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        DOCKER_HUB_CREDENTIALS = 'dockerhub_credential' // 确保这个 ID 与 Jenkins 凭据配置中的一致
+    }
     stages {
         stage('Package') {
             steps {
@@ -7,31 +10,28 @@ pipeline {
                 sh 'mvn -B -DskipTests clean package'
             }
         }
-        // Building Docker image
         stage('Building image') {
             steps {
                 script {
-                    docker.build('12110416781/title:latest') // Replace 'your-image-name:tag' with your desired image name and tag
+                    docker.build('12110416781/title:latest')
                 }
             }
         }
-        // Pushing Docker image to Docker Hub
         stage('Upload image') {
             steps {
                 script {
-                    docker.withRegistry('', 'docker_hub') {
-                        docker.image('12110416781/title:latest').push() // Replace 'your-image-name:tag' with your image name and tag
+                    docker.withRegistry('', DOCKER_HUB_CREDENTIALS) {
+                        docker.image('12110416781/title:latest').push()
                     }
                 }
             }
         }
-        // Running Docker containers
         stage('Run containers') {
             steps {
                 script {
-                    docker.image('12110416781/title:latest').run('-p 10084:10084') // Replace 'your-image-name:tag' with your image name and tag
-                    docker.image('12110416781/title:latest').run('-p 10085:10085') // Replace 'your-image-name:tag' with your image name and tag
-                    docker.image('12110416781/title:latest').run('-p 10086:10086') // Replace 'your-image-name:tag' with your image name and tag
+                    docker.image('12110416781/title:latest').run('-p 10084:10084')
+                    docker.image('12110416781/title:latest').run('-p 10085:10085')
+                    docker.image('12110416781/title:latest').run('-p 10086:10086')
                 }
             }
         }
