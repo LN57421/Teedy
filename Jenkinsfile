@@ -29,9 +29,9 @@ pipeline {
         stage('Run containers') {
             steps {
                 script {
-                    docker.image('12110416781/title:latest').run('-p 10084:10084')
-                    docker.image('12110416781/title:latest').run('-p 10085:10085')
-                    docker.image('12110416781/title:latest').run('-p 10086:10086')
+                    docker.image('12110416781/title:latest').run('-p 10084:8080')
+                    docker.image('12110416781/title:latest').run('-p 10085:8080')
+                    docker.image('12110416781/title:latest').run('-p 10086:8080')
                 }
             }
         }
